@@ -1,158 +1,130 @@
 # Develop AI Agents in Azure
 
-This repository contains hands-on exercises for building, connecting, observing, evaluating, and securing AI agents with Microsoft Azure. The labs use a fictional company, Caldova, to give the exercises a consistent business scenario.
+This repository contains a hands-on workshop for building, extending, evaluating, and deploying AI agents on Microsoft Azure. It is designed for developers and solution architects who want to learn how to create practical agent-based applications using Azure AI Foundry, model deployments, custom tools, knowledge grounding, and orchestration patterns.
 
-Start with the [workshop exercises](https://go.microsoft.com/fwlink/?linkid=2310820) or choose a lab below. The exercises complement the [Microsoft Learn AI agents learning path](https://learn.microsoft.com/training/paths/develop-ai-agents-azure/).
+The labs in this repo walk through the end-to-end process of building agent experiences, from the initial setup and prompt engineering to MCP integration, multi-agent workflows, and monitoring and safety practices.
 
-> **Azure costs and access:** Running the cloud exercises requires an Azure subscription with permission and model quota for the resources you use. Some optional Microsoft 365 exercises also require tenant admin consent or a Microsoft 365 Copilot license. Delete lab resources when you finish.
+> [!IMPORTANT]
+> To complete the exercises in this repository, you will need an Azure subscription with permission to provision the required Azure resources and AI services. If you do not already have one, you can create a free Azure account at https://azure.microsoft.com/free.
 
-## What You Will Build
+> [!NOTE]
+> These labs are intended to complement the Microsoft Learn learning path for developing AI agents in Azure. You can also access the workshop content in the GitHub Pages site for this repo.
 
-The main workshop is organized as four modular learning tracks. Each track has a getting-started page and task pages; complete the core tasks first, then choose optional tasks that fit your goals.
+## What you will learn
 
-| Track | What you practice | Start here |
-| --- | --- | --- |
-| A. Build and extend agents | Ground an agent in company policy; add remote MCP and custom function tools; call it from a client; optionally host it. | [Track A](Instructions/Consolidated/A-build-and-extend-ai-agents.md); [Setup](Instructions/Consolidated/A0-getting-started.md) |
-| B. Enterprise knowledge and Microsoft 365 | Ground an agent with Foundry IQ; connect from code; optionally publish to Teams or Microsoft 365 Copilot, and explore Work IQ. | [Track B](Instructions/Consolidated/B-integrate-agents-with-enterprise-knowledge-and-m365.md); [Setup](Instructions/Consolidated/B0-getting-started.md) |
-| C. Multi-agent solutions | Build a tool-using agent; orchestrate agents in sequence; connect remote agents with A2A; classify and route tickets. | [Track C](Instructions/Consolidated/C-build-multi-agent-solutions-with-agent-framework.md); [Setup](Instructions/Consolidated/C0-getting-started.md) |
-| D. Observe, evaluate, and secure | Trace agent runs; evaluate answer quality; optionally run adversarial red-team tests. | [Track D](Instructions/Consolidated/D-observe-evaluate-and-secure-agents.md); [Setup](Instructions/Consolidated/D0-getting-started.md) |
+- How to create and ground an AI agent using Azure AI Foundry
+- How to connect remote MCP servers and client applications to agents
+- How to add custom function tools to extend agent capabilities
+- How to build and orchestrate multi-agent solutions
+- How to integrate agents with enterprise knowledge and Microsoft 365 scenarios
+- How to observe, evaluate, and secure AI agents in production settings
 
-There is also a standalone [Agent Framework expense-claim example](Labfiles/07-agent-framework/python/agent-framework.py). Its sample tool prints a proposed email; it does not send a real email.
+## Repository overview
 
-## How It Fits Together
+The repo is organized into several key areas:
 
-The local Python code connects to a Microsoft Foundry project and deployed chat model. Depending on the task, the agent can retrieve enterprise knowledge, call local or remote tools, collaborate with other agents, or emit telemetry for evaluation and monitoring.
+- `Instructions/` – workshop instructions and consolidated lab content
+- `Instructions/Consolidated/` – the primary workshop modules and tasks
+- `Labfiles/` – starter projects, setup scripts, and solution implementations for each lab
+- `tools/` – repository automation and validation scripts
+- `index.md`, `workshop.md`, and related site files – static site content for the workshop
+- `LICENSE` – repository license terms
 
-```mermaid
-flowchart LR
-	Learner[ Learner or client app ] --> App[ Python lab application ]
-	App --> Identity[ Azure Identity / Azure CLI sign-in ]
-	Identity --> Foundry[ Microsoft Foundry project ]
-	Foundry --> Model[ Deployed chat model ]
-	App --> Agent[ Foundry agent or Agent Framework ]
-	Agent <--> Model
-	Agent --> Tools[ Custom functions and MCP tools ]
-	Agent --> Knowledge[ Foundry IQ knowledge base ]
-	Knowledge --> Search[ Azure AI Search ]
-	Agent --> Channels[ Teams or Microsoft 365 Copilot, optional ]
-	Agent --> Telemetry[ OpenTelemetry ]
-	Telemetry --> Monitor[ Azure Monitor / Application Insights ]
-	Agent --> Eval[ Evaluation and red-team tasks ]
-```
+## Workshop structure
 
-Not every lab uses every component. Foundry IQ, Azure AI Search, Teams, Microsoft 365 Copilot, Work IQ, monitoring, and evaluation are introduced in the relevant tasks rather than being provisioned by every setup path.
+The repository is grouped into four main learning tracks:
 
-### Optional Azure Provisioning Flow
+### A. Build and extend AI agents
+Topics include creating agents, grounding them with data, using MCP servers, and calling them from client applications.
 
-Each consolidated lab includes an optional Azure Developer CLI (`azd`) setup. The default instructions also explain how to create the Foundry project in the portal.
+### B. Integrate agents with enterprise knowledge and Microsoft 365
+Topics include AI agent integration with enterprise knowledge systems, Teams, Microsoft 365 Copilot, and workplace intelligence scenarios.
 
-```mermaid
-flowchart TD
-	Start[Choose portal setup or azd] -->|azd up| Azd[Azure Developer CLI]
-	Azd --> Bicep[Bicep infrastructure templates]
-	Bicep --> RG[Azure resource group]
-	RG --> Account[Microsoft Foundry resource]
-	Account --> Project[Foundry project]
-	Account --> Deployment[Chat model deployment]
-	Azd --> Hook[Post-provision setup hook]
-	Hook --> Env[Write project endpoint and deployment name to Python/.env]
-	Env --> Run[Run the lab code locally]
-```
+### C. Build multi-agent solutions with Agent Framework
+Topics include agent orchestration, tools, routing, and multi-agent collaboration patterns.
 
-The shared `azd`/Bicep template provisions the Foundry resource, project, and chat model deployment. It does not deploy the local lab application, and it does not create every optional integration. For example, Track D requires Application Insights to be connected separately.
+### D. Observe, evaluate, and secure agents
+Topics include tracing, evaluation, and red-team testing for robust agent operations.
 
-## Tools and Technologies
+## Prerequisites
 
-| Tool or technology | How the project uses it |
-| --- | --- |
-| Python | Lab applications, setup scripts, and repository content checks. Each lab has its own `requirements.txt`; there is no single root Python environment for all labs. |
-| Microsoft Foundry SDKs | Connect Python apps to Foundry projects, agents, and model deployments. The lab dependencies include `azure-ai-projects` and related agent packages. |
-| Microsoft Agent Framework | Define agents and tools, run tool-calling loops, and build multi-agent orchestrations. |
-| Azure Identity | Authenticate local code with Azure credentials, commonly through Azure CLI sign-in. |
-| MCP and FastMCP | Expose and call tools through the Model Context Protocol, locally or remotely. |
-| A2A SDK | Connect remote agents using the Agent-to-Agent protocol in the multi-agent track. |
-| Gradio, FastAPI, and Uvicorn | Provide sample chat interfaces and local HTTP services in selected exercises. |
-| OpenTelemetry | Create and export agent traces in the observability track. |
-| Azure AI Evaluation and PyRIT | Score answer quality and run optional adversarial red-team tests. PyRIT is used by the red-team exercise. |
-| Azure Developer CLI (`azd`) and Bicep | Optionally provision the common Foundry resources from infrastructure-as-code templates. |
-| Jekyll and GitHub Pages | Build and publish the learning pages. Markdown pages use front matter; selected website-only pages use Liquid templates. |
-| Repository check scripts | Validate links, front matter, code examples, generated lab sections, SDK imports, and synchronized shared infrastructure. |
+Before starting the labs, make sure you have:
 
-## Azure and Microsoft Services
+- An Azure subscription with access to required Azure AI services and model deployments
+- Permission to create and configure Azure resources
+- Python 3.13 or later for local code execution when applicable
+- A modern code editor such as Visual Studio Code
+- Access to the relevant Azure AI and app tooling used in the exercises
 
-| Service | Role in the exercises | Where it appears |
-| --- | --- | --- |
-| Microsoft Foundry (Azure AI Services) | Hosts the project, model deployment, and agent experiences used by the Python exercises. | Common foundation for Tracks A-D. |
-| Azure OpenAI model deployments in Foundry | Provide chat completions and agent reasoning. Availability, model choice, quota, and region depend on the subscription. | Common foundation for code labs. |
-| Azure AI Search | Provides the searchable index behind enterprise knowledge scenarios. | Track B, through Foundry IQ. |
-| Foundry IQ | Connects agents to knowledge bases and supports retrieval over organization documents. | Track B. |
-| Azure Monitor and Application Insights | Receive OpenTelemetry traces and show agent execution details. The Application Insights resource must be connected for the tracing task. | Track D; some hosted-agent deployment scenarios also use it. |
-| Azure resource groups | Group lab resources so they can be managed and cleaned up together. | Portal and `azd` setup paths. |
-| Microsoft Teams and Microsoft 365 Copilot | Optional surfaces for publishing an agent to end users. These require suitable Microsoft 365 tenant access and permissions. | Track B; not part of the common Bicep deployment. |
-| Work IQ | Optional MCP-based access to permission-aware Microsoft 365 workplace signals such as mail, meetings, and Teams messages. | Track B; requires additional setup and consent. |
+## Getting started
 
-Azure AI Search and Application Insights are not created by the shared `azd` template. Follow the individual task's prerequisites and setup instructions; resource requirements can vary by task.
+1. Clone this repository to your machine.
+2. Open the repo in Visual Studio Code.
+3. Review the workshop agenda in `workshop.md` or the published GitHub Pages version.
+4. Start with the setup tasks for the first lab in `Instructions/Consolidated/`.
+5. Follow the lab-specific instructions in the relevant section of the `Instructions` folder.
+6. Use the starter code and solution files in `Labfiles/` as needed during the exercises.
 
-## Step-by-Step: Run a Lab
-
-1. **Choose a track.** Open one of the Track A-D pages above and read its **Getting started** page before opening a task. Tasks marked optional may need extra services, licenses, or permissions.
-2. **Check prerequisites.** Have Git, Visual Studio Code, Python, and an Azure subscription available. Python 3.13 is the version tested by the current lab setup pages; check the selected track's instructions for the current supported version and any extra prerequisites.
-3. **Create the Foundry project and model deployment.** Use the Azure portal as described in the setup page, or use the optional `azd` path from that lab's folder:
-
-   ```powershell
-   azd auth login
-   azd up
-   ```
-
-   `azd up` provisions the infrastructure and runs a setup hook that writes the project endpoint and model deployment name into the lab's `.env` file.
-4. **Open the lab's Python folder.** For example, Track A is under `Labfiles/A-build-and-extend-ai-agents/Python`. Each track keeps its own starter code, dependency list, virtual environment, and environment configuration.
-5. **Create and activate a virtual environment, then install that lab's dependencies.** In PowerShell, from the selected `Python` folder:
-
-   ```powershell
-   python -m venv labenv
-   .\labenv\Scripts\Activate.ps1
-   pip install -r requirements.txt
-   ```
-
-6. **Configure `.env`.** Set `PROJECT_ENDPOINT` and `MODEL_DEPLOYMENT_NAME` as described in the setup page. Some tasks need additional values. Do not commit credentials or secrets.
-7. **Run the task's preflight and follow its steps.** The setup scripts and command-line options vary between tracks. Use the task page's exact command, then run the sample application or script it identifies.
-8. **Review the result.** Depending on the task, this may be an agent response, a tool result, an MCP call, a multi-agent workflow, a trace, or an evaluation report.
-9. **Clean up Azure resources.** If you provisioned with `azd`, run `azd down` from the same lab folder when finished. If you created resources manually, delete the lab resource group in the Azure portal. Separately created integrations may need separate cleanup.
-
-## Repository Layout
+## Project layout
 
 ```text
-Instructions/Consolidated/   Lab overview, setup, and task instructions
-Instructions/Exercises/      Exercise-oriented versions of selected material
-Labfiles/                    Python starter code, solutions, setup, and Bicep templates
-Labfiles/_shared/            Canonical shared azd/Bicep files and sync utility
-tools/                       Lab content generation and validation scripts
-_layouts/                    Jekyll layouts for the workshop site
-index.md                     Website home page and exercise index
-workshop.md                  Instructor-led workshop agenda
-labs.json                    Generated machine-readable lab catalogue
-readme.md                    Repository and local setup guide
+.
+├── Instructions/
+│   ├── Consolidated/
+│   └── Exercises/
+├── Labfiles/
+│   ├── A-build-and-extend-ai-agents/
+│   ├── B-integrate-agents-with-enterprise-knowledge-and-m365/
+│   ├── C-build-multi-agent-solutions-with-agent-framework/
+│   ├── D-observe-evaluate-and-secure-agents/
+│   └── 08-agent-orchestration/
+├── tools/
+├── LICENSE
+├── index.md
+├── readme.md
+├── workshop.md
+├── explore.md
+├── labs.json
+└── _config.yml
 ```
 
-Starter code is under `Labfiles/<lab-folder>/Python/`; reference solutions are under the corresponding `Solution/Python/` folder when provided. The lab instruction pages are the source of truth for exact task commands and prerequisites.
+## Suggested learning path
 
-## Step-by-Step: Validate Content Changes
+A typical flow through the workshop is:
 
-The content checks run locally without Azure credentials or Azure resources. Install their dependencies once, then run the checks from the repository root:
+1. Complete the setup tasks for the first session
+2. Build a basic agent and connect it to tools or data
+3. Add grounding and remote integrations
+4. Explore orchestration with multiple agents
+5. Evaluate tracing, quality, and security implications
+6. Extend the solution using the optional labs and enterprise scenarios
 
-```powershell
-pip install -r tools/checks/requirements.txt
-python tools/checks/check_frontmatter.py
-python tools/checks/check_code_blocks.py
-python tools/checks/check_links.py
-python tools/checks/check_line_endings.py
-python tools/generate_lab_blocks.py --check
-python Labfiles/_shared/sync.py --check
-```
+## Using the lab files
 
-The checks catch malformed page metadata, invalid Python code blocks, broken local links, line-ending drift, out-of-date generated task tables, and drift in copies of shared provisioning files. The SDK contract check installs lab dependencies and runs separately in CI; see [the check documentation](tools/checks/README.md).
+Each lab folder under `Labfiles/` typically contains:
 
-## Reporting Issues
+- `setup/` – environment preparation and bootstrap scripts
+- `Python/` – starter and student code
+- `Solution/` – reference implementation for completed work
+- `infra/` – deployment resources or configuration files for Azure provisioning
 
-If an exercise does not work as described, please [open an issue](https://github.com/MicrosoftLearning/mslearn-ai-agents/issues) with the lab/task name, the command you ran, and the error message. Remove secrets, access tokens, and personal data before sharing logs.
+Use the setup instructions in each lab before running code locally.
+
+## Reporting issues
+
+If you run into problems while working through the exercises, please open an issue in this repo so the workshop content can be improved and updated.
+
+## License
+
+This project is licensed under the terms found in the `LICENSE` file.
+
+## Additional resources
+
+- Microsoft Learn training path for AI agents in Azure
+- GitHub Pages workshop site for the lab content
+- Azure AI Foundry documentation and developer resources
+
+---
+
+This repository is intended as a practical, code-first learning experience for building AI agents on Azure. Start with the first lab, follow the setup steps carefully, and progressively extend the agent patterns as you move through the modules.
 
