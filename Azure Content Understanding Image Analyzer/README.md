@@ -49,7 +49,7 @@ flowchart TD
     C --> D[Create ContentUnderstandingClient]
     D --> E[User selects image 1, 2, or 3]
     E --> F[Read image bytes from images folder]
-    F --> G[Call begin_analyze() on Azure Content Understanding]
+    F --> G["Call begin_analyze() on Azure Content Understanding"]
     G --> H[Analyzer returns Description and Tags]
     H --> I[Display results in terminal]
     I --> J[End or choose another image]
