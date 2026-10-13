@@ -44,13 +44,13 @@ flowchart TD
     A[Business card image file] --> B[read-card.py]
     B --> C[Load ENDPOINT, KEY, ANALYZER_NAME from .env]
     C --> D[Create ContentUnderstandingClient]
-    D --> E[Call begin_analyze_binary()]
+    D --> E["Call begin_analyze_binary()"]
     E --> F[Azure AI Content Understanding service]
     F --> G[Extract fields from card]
     G --> H[Save result to results.json]
 
     I[biz-card.json schema] --> J[create-analyzer.py]
-    J --> K[Create custom analyzer with begin_create_analyzer()]
+    J --> K["Create custom analyzer with begin_create_analyzer()"]
     K --> F
 ```
 
